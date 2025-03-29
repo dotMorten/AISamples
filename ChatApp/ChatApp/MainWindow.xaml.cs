@@ -11,7 +11,7 @@ namespace ChatApp
 {
     public sealed partial class MainWindow : Window
     {
-        private const string systemPrompt = "You are an AI assistant that helps the user and talks like a pirate.";
+        private const string systemPrompt = "You are an AI assistant named Black Beard that helps the user and talks like a pirate.";
         private LanguageModelContext? context; // maintains chat context across multiple calls
         private Microsoft.Windows.AI.ContentModeration.ContentFilterOptions filter = new Microsoft.Windows.AI.ContentModeration.ContentFilterOptions();
 
@@ -21,6 +21,7 @@ namespace ChatApp
             AppWindow.SetIcon("icon.png");
             ExtendsContentIntoTitleBar = true;
             PromptBox.Loaded += (s,e) => PromptBox.Focus(FocusState.Programmatic);
+            chatView.Messages.Add(new ChatMessage() { Text = "Ahoy matey! What treasure ye seek, or perhaps assistance I can provide on yer grand voyag eacross the digital seas?" });
         }
 
         private void AskButton_Click(object sender, RoutedEventArgs e) => Ask(PromptBox.Text);
