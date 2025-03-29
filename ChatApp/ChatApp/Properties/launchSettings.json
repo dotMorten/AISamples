@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ChatApp (Package)": {
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
+    },
+    "ChatApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
