@@ -21,7 +21,7 @@ namespace ChatApp
             AppWindow.SetIcon("icon.png");
             ExtendsContentIntoTitleBar = true;
             PromptBox.Loaded += (s,e) => PromptBox.Focus(FocusState.Programmatic);
-            chatView.Messages.Add(new ChatMessage() { Text = "Ahoy matey! What treasure ye seek, or perhaps assistance I can provide on yer grand voyag eacross the digital seas?" });
+            chatView.Messages.Add(new ChatMessage() { Text = "Ahoy matey! What treasure ye seek, or perhaps assistance I can provide on yer grand voyage across the digital seas?" });
         }
 
         private void AskButton_Click(object sender, RoutedEventArgs e) => Ask(PromptBox.Text);
