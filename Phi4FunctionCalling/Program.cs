@@ -14,8 +14,8 @@ using Microsoft.SemanticKernel.Connectors.Onnx;
 using Phi4ConsoleApp.Connectors.Phi4;
 
 // Path to huggingface model downloaded from https://huggingface.co/microsoft/Phi-4-multimodal-instruct-onnx
-const string modelPath = @"e:\AI\Phi-4-multimodal-instruct-onnx\gpu\gpu-int4-rtn-block-32";
-
+const string phi4MultiModalModelPath = @"e:\AIModels\Phi-4-multimodal-instruct-onnx\gpu\gpu-int4-rtn-block-32";
+const string phi4MiniModelPath = @"e:\AIModels\Phi-4-mini-instruct-onnx\cpu_and_mobile\cpu-int4-rtn-block-32-acc-level-4";
 // Initialize the Semantic kernel
 var kernelBuilder = Kernel.CreateBuilder();
 
@@ -27,10 +27,11 @@ var kernelBuilder = Kernel.CreateBuilder();
 //        endpoint: "https://yourendpointhere.openai.azure.com/"); // With Ollama OpenAI API endpoint
 
 // Use Semantic Kernel's Onnx adapter:
-// kernelBuilder = kernelBuilder.AddOnnxRuntimeGenAIChatCompletion("phi4", modelPath);
+// kernelBuilder = kernelBuilder.AddOnnxRuntimeGenAIChatCompletion("phi4", phi4MultiModalModelPath);
 
 // Use my Phi4 adapter
-kernelBuilder = kernelBuilder.AddPhi4AIChatCompletion("phi4", modelPath);
+//kernelBuilder = kernelBuilder.AddPhi4AIChatCompletion("phi4", phi4MultiModalModelPath, multimodal: true, provider: "cpu");
+kernelBuilder = kernelBuilder.AddPhi4AIChatCompletion("phi4", phi4MiniModelPath, multimodal: false, provider: "cpu");
 
 kernelBuilder.Plugins.AddFromType<Phi4ConsoleApp.Functions>();
 // kernelBuilder.Plugins.AddFromType<HAFunctions>();
@@ -77,10 +78,10 @@ while (true)
     Console.WriteLine();
 }
 public static class Extensions {
-    public static IKernelBuilder AddPhi4AIChatCompletion(this IKernelBuilder builder, string serviceId, string modelPath)
+    public static IKernelBuilder AddPhi4AIChatCompletion(this IKernelBuilder builder, string serviceId, string modelPath, bool multimodal, string provider = "cuda")
     {
         Func<IServiceProvider, object, Phi4ChatCompletionService> implementationFactory = 
-            (IServiceProvider serviceProvider, object _) => new Phi4ChatCompletionService(modelPath);
+            (IServiceProvider serviceProvider, object _) => new Phi4ChatCompletionService(modelPath, multimodal, provider);
         builder.Services.AddKeyedSingleton((object?)serviceId, (Func<IServiceProvider, object?, IChatCompletionService>)implementationFactory);
         builder.Services.AddKeyedSingleton((object?)serviceId, (Func<IServiceProvider, object?, ITextGenerationService>)implementationFactory);
         // builder.Services.AddKeyedSingleton((object?)serviceId, (Func<IServiceProvider, object?, IImageToTextService>)implementationFactory);
