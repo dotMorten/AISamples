@@ -18,9 +18,9 @@
             <x:Double x:Key="TitleBarRightPaddingWidth">0</x:Double>
         </Grid.Resources>
         <TitleBar Title="Windows Copilot Runtime" Subtitle="Chat App">
-            <TitleBar.Footer>
+            <TitleBar.RightHeader>
                 <AppBarButton Icon="Refresh" ToolTipService.ToolTip="Start new chat" Click="ClearChat_Click" />
-            </TitleBar.Footer>
+            </TitleBar.RightHeader>
         </TitleBar>
 
         <localctrls:ChatView x:Name="chatView" Margin="10,0" Grid.Row="1" />

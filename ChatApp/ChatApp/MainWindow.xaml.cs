@@ -40,11 +40,23 @@ namespace ChatApp
                 return;
             this.PromptBox.Text = "";
 
+            var readyState = LanguageModel.GetReadyState();
+            if (readyState == Microsoft.Windows.AI.AIFeatureReadyState.NotSupportedOnCurrentSystem)
+            {
+                chatView.Messages.Add(new ChatMessage() { Text = "Language model not supported on this system." });
+                return;
+            }
+            if (readyState == Microsoft.Windows.AI.AIFeatureReadyState.DisabledByUser)
+            {
+                chatView.Messages.Add(new ChatMessage() { Text = "Language model was disabled by the user." });
+                return;
+            }
+
             chatView.Messages.Add(new ChatMessage() { Text = prompt, IsUser = true });
 
             AskButton.IsEnabled = false;
             ProcessingRing.IsActive = true;
-            if (!LanguageModel.IsAvailable())
+            if (readyState == Microsoft.Windows.AI.AIFeatureReadyState.EnsureNeeded)
             {
                 ContentDialog dialog = new ContentDialog
                 {
@@ -53,10 +65,10 @@ namespace ChatApp
                     CloseButtonText = "OK",
                     XamlRoot = this.Content.XamlRoot
                 };
-                var op = LanguageModel.MakeAvailableAsync();
+                var op = LanguageModel.EnsureReadyAsync();
                 op.Progress = (s, e) =>
                 {
-                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () => ((ProgressBar)dialog.Content).Value = e.Progress);
+                    DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () => ((ProgressBar)dialog.Content).Value = e);
                 };
                 await op;
                 dialog.Hide();
@@ -68,8 +80,7 @@ namespace ChatApp
             {
                 context = languageModel.CreateContext(systemPrompt, filter);
             }
-
-            if (languageModel.IsPromptLargerThanContext(context, prompt))
+            if (languageModel.GetUsablePromptLength(context, prompt) < (ulong)prompt.Length)
             {
                 AskButton.IsEnabled = true;
                 ProcessingRing.IsActive = false;
@@ -79,8 +90,7 @@ namespace ChatApp
 
             var msg = new ChatMessage() { };
             chatView.Messages.Add(msg);
-            AsyncOperationProgressHandler<LanguageModelResponse, string>
-            progressHandler = (asyncInfo, delta) =>
+            AsyncOperationProgressHandler<LanguageModelResponseResult, string> progressHandler = (asyncInfo, delta) =>
             {
                 _ = DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
                 {
@@ -88,7 +98,8 @@ namespace ChatApp
                     msg.Text += delta;
                 });
             };
-            var generateOperation = languageModel.GenerateResponseWithProgressAsync(new LanguageModelOptions(), prompt, filter, context );
+            
+            var generateOperation = languageModel.GenerateResponseAsync(context, prompt, new LanguageModelOptions() { ContentFilterOptions = filter });
             generateOperation.Progress = progressHandler;
 
             var result = await generateOperation;

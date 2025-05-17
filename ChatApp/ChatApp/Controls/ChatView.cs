@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace ChatApp.Controls
 {
-    public sealed class ChatView : Control
+    public sealed partial class ChatView : Control
     {
         public ChatView()
         {
@@ -54,7 +54,8 @@ namespace ChatApp.Controls
             DependencyProperty.Register(nameof(Messages), typeof(ObservableCollection<ChatMessage>), typeof(ChatView), new PropertyMetadata(null));
     }
 
-    public class ChatMessage : INotifyPropertyChanged
+    [Microsoft.UI.Xaml.Data.Bindable]
+    public partial class ChatMessage : INotifyPropertyChanged
     {
         private string _text = string.Empty;
 

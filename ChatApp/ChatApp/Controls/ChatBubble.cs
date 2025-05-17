@@ -12,7 +12,7 @@ using Windows.Foundation;
 
 namespace ChatApp.Controls
 {
-    public sealed class ChatBubble : Control
+    public sealed partial class ChatBubble : Control
     {
         public ChatBubble()
         {
