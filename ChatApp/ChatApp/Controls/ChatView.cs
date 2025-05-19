@@ -72,7 +72,6 @@ namespace ChatApp.Controls
             }
         }
 
-
         public string? Name { get; set; }
 
         public bool IsUser { get; set; }
@@ -86,7 +85,6 @@ namespace ChatApp.Controls
             get { return _isTyping; }
             set { _isTyping = value; OnPropertyChanged(nameof(IsTyping)); }
         }
-
 
         protected void OnPropertyChanged(string propertyName)
         {
