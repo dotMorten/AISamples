@@ -37,7 +37,9 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.250515001-experimental2" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Packages" Version="1.8.250515001-experimental2" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.250507002-experimental" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.AI" Version="1.8.135-experimental" />
   </ItemGroup>
 
   <!--
